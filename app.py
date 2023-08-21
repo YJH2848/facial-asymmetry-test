@@ -1,22 +1,21 @@
 import cv2
 import time
 import mediapipe as mp
+from flask import Flask, render_template
+from check_your_face import check_your_face
 
-def check_your_face(eye, cheek):
-    if eye < 0 or cheek < 0:
-        eye *= -1
-        cheek *= -1
-        
-    if eye <= 1 and cheek <= 1:
-        print("당신은 좌우가 99.9% 일치합니다")
-    elif eye <= 6 and cheek <= 10:
-        print("눈과 볼의 대칭이 아주 환상적이네요")
-    elif eye <= 10 and cheek <= 15:
-        print("평균입니다!")
-    else:
-        print("다시 태어나십시요!")
+app = Flask(__name__)
 
-def capture_and_evaluate():
+# Mediapipe 초기화
+mp_face_detection = mp.solutions.face_detection
+face_detection = mp_face_detection.FaceDetection(min_detection_confidence=0.5)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/capture')
+def capture():
     cap = cv2.VideoCapture(0)
     start_time = time.time()
 
@@ -71,20 +70,14 @@ def capture_and_evaluate():
                 lx, ly = landmark
                 cv2.circle(image, (lx, ly), 5, (255, 0, 0), -1)
 
-    cv2.imshow('Face Landmarks', image)
-    cv2.waitKey(0)
+    cv2.imwrite('face_landmarks.jpg', image)
 
     left_eye, right_eye, _, _, left_cheek, right_cheek = face[0]
     
     eye = left_eye[1] - right_eye[1]
     cheek = left_cheek[1] - right_cheek[1]
-    
-    check_your_face(eye, cheek)
-    cv2.destroyAllWindows()
 
-# Mediapipe 초기화
-mp_face_detection = mp.solutions.face_detection
-face_detection = mp_face_detection.FaceDetection(min_detection_confidence=0.5)
+    return render_template('result.html', eye=eye, cheek=cheek)
 
-# 10초 후에 카메라로 사진 찍기
-capture_and_evaluate()
+if __name__ == '__main__':
+    app.run(debug=True, port=8000)

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Face Recognition Result</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      img {
+        margin-bottom: 16px;
+        max-height: 50vh;
+      }
+
+      .label {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+
+      .result {
+        font-size: 36px;
+        font-weight: bold;
+        color: #4caf50;
+        margin-bottom: 16px;
+      }
+
+      button {
+        font-size: 20px;
+        padding: 16px 32px;
+        border: none;
+        border-radius: 4px;
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #3e8e41;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="label">분석 결과</div>
+      <div class="result">눈과 볼의 상대 위치: {{ eye }} : {{ cheek }}</div>
+      <button onclick="window.location.href='/'">한번 더하기</button>
+    </div>
+  </body>
+</html>
